@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// USERS ENDPOINTS
 app.post("/users", async (req, res) => {
     const user = new User(req.body);
 
@@ -42,6 +43,27 @@ app.get("/users/:id", async (req, res) => {
     }
 });
 
+app.patch('/users/:id', async (req, res) => {
+    const _id = req.params.id;
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).send({error: "invalid updates!"})
+    }
+    try {
+        const user = await User.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
+        if (!user) {
+            return res.status(404).send()
+        }
+        res.status(200).send(user)
+    } catch (err) {
+        res.status(400).send(err)
+    }
+})
+
+// TASKS ENDPOINTS
 app.post("/tasks", async (req, res) => {
     const task = new Task(req.body);
 
@@ -73,6 +95,32 @@ app.get("/tasks/:id", async (req, res) => {
         res.status(200).send(task);
     } catch {
         res.status(404).send()
+    }
+});
+
+app.patch("/tasks/:id", async (req, res) => {
+    const _id = req.params.id;
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ["description", "completed"];
+    const isValidOperation = updates.every((update) =>
+        allowedUpdates.includes(update)
+    );
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: "invalid updates!" });
+    }
+
+    try {
+        const task = await Task.findByIdAndUpdate(_id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        if (!task) {
+            return res.status(404).send();
+        }
+        res.status(200).send(task);
+    } catch (err) {
+        res.status(400).send(err);
     }
 });
 
