@@ -12,6 +12,7 @@ MongoClient.connect(
         }
 
         const db = client.db(dbName);
+        //CREATE (insertOne)
         /*
         db.collection("users").insertOne({
             name: "James Brown",
@@ -24,6 +25,7 @@ MongoClient.connect(
         });
         */
 
+        // CREATE (insertMany)
         /*
         db.collection("users").insertMany(
             [
@@ -48,7 +50,9 @@ MongoClient.connect(
             }
         );
         */
-                /*
+
+        // CREATE (insertMany)
+        /*
         db.collection("tasks").insertMany(
             [
                 {
@@ -72,6 +76,52 @@ MongoClient.connect(
             }
         );
         */
+
+        // READ (findOne)
+        /*
+        db.collection("users").findOne({ name: "Jen McAdams" }, (error, user) => {
+            if (error) {
+                return console.log("unable to fetch");
+            }
+            console.log(user);
+        });
+        */
+
+        // READ (findOne using ObjectID)
+        /*
+        db.collection("users").findOne({ _id: new ObjectID("604ab1e88a698e2918b626b9") }, (error, user) => {
+            if (error) {
+                return console.log("unable to fetch");
+            }
+            console.log(user);
+        });
+        */
+
+        // READ (multiple documents) using toArray() cursor method
+        /*
+        db.collection("users")
+            .find({ age: 24 })
+            .toArray((error, users) => {
+                if (error) {
+                    return console.log("unable to find users");
+                }
+                console.log(users);
+            });
+        */
+       
+       // READ using count() cursor method
+        /*
+        db.collection("users")
+            .find({ age: 24 })
+            .count((error, count) => {
+                if (error) {
+                    return console.log("unable to find users");
+                }
+                console.log(`${count} users found!`);
+            });
+        */
+
+        // UPDATE (updateOne)
         /*
         db.collection("users")
             .updateOne(
@@ -85,33 +135,29 @@ MongoClient.connect(
             })
             .catch((err) => console.log(err));
         */
+
+        // UPDATE (updateMany)
         /*
-        db.collection("users").findOne({ name: "Jen Adams" }, (error, user) => {
-            if (error) {
-                return console.log("unable to fetch");
-            }
-            console.log(user);
+        db.collection("tasks")
+            .updateMany(
+                { completed: false },
+                { $set: { completed: true} }
+            )
+            .then((res) => {
+                console.log(res.modifiedCount);
+            })
+            .catch((err) => console.log(err));
+        */
+       
+        // DELETE (deleteMany)
+        /*
+        db.collection('users').deleteMany({age: 27})
+        .then((res) => {
+            console.log(res.deletedCount)
+        })
+        .catch((err) => {
+            console.log(err)
         });
-        */
-        /*
-        db.collection("users")
-            .find({ age: 24 })
-            .toArray((error, users) => {
-                if (error) {
-                    return console.log("unable to find users");
-                }
-                console.log(users);
-            });
-        */
-        /*
-        db.collection("users")
-            .find({ age: 24 })
-            .count((error, count) => {
-                if (error) {
-                    return console.log("unable to find users");
-                }
-                console.log(`${count} users found!`);
-            });
         */
     }
 );
