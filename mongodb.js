@@ -1,7 +1,7 @@
 const { MongoClient, ObjectID } = require("mongodb");
 
 const connectionURL = "mongodb://127.0.0.1:27017";
-const dbName = "tasks-app";
+const dbName = "tasks-mongodb";
 
 MongoClient.connect(
     connectionURL,
@@ -12,7 +12,66 @@ MongoClient.connect(
         }
 
         const db = client.db(dbName);
+        /*
+        db.collection("users").insertOne({
+            name: "James Brown",
+            age: 35,
+        }, (error, result) => {
+            if (error) {
+                return console.log('unable to insert document to collection')
+            }
+            console.log(result.ops)
+        });
+        */
 
+        /*
+        db.collection("users").insertMany(
+            [
+                {
+                    name: "Adamu Traore",
+                    age: 29,
+                },
+                {
+                    name: "Jen McAdams",
+                    age: 23,
+                },
+                {
+                    name: "Sara Jones",
+                    age: 27,
+                },
+            ],
+            (error, result) => {
+                if (error) {
+                    return console.log("unable to insert documents to collection");
+                }
+                console.log(result.ops);
+            }
+        );
+        */
+                /*
+        db.collection("tasks").insertMany(
+            [
+                {
+                    description: "cook pasta",
+                    completed: true,
+                },
+                {
+                    description: "empty trash",
+                    completed: false,
+                },
+                {
+                    description: "do laundry",
+                    completed: true,
+                },
+            ],
+            (error, result) => {
+                if (error) {
+                    return console.log("unable to insert documents to collection");
+                }
+                console.log(result.ops);
+            }
+        );
+        */
         /*
         db.collection("users")
             .updateOne(
@@ -53,54 +112,6 @@ MongoClient.connect(
                 }
                 console.log(`${count} users found!`);
             });
-        */
-        /*
-        db.collection("users").insertMany(
-            [
-                {
-                    name: "Dan Brown",
-                    age: 29,
-                },
-                {
-                    name: "Jen Adams",
-                    age: 23,
-                },
-                {
-                    name: "Sara Jones",
-                    age: 27,
-                },
-            ],
-            (error, result) => {
-                if (error) {
-                    return console.log("unable to insert user");
-                }
-                console.log(result.ops);
-            }
-        );
-        */
-        /*
-        db.collection("tasks").insertMany(
-            [
-                {
-                    description: "cook pasta",
-                    completed: true,
-                },
-                {
-                    description: "empty trash",
-                    completed: false,
-                },
-                {
-                    description: "do laundry",
-                    completed: true,
-                },
-            ],
-            (error, result) => {
-                if (error) {
-                    return console.log("unable to insert task");
-                }
-                console.log(result.ops);
-            }
-        );
         */
     }
 );
