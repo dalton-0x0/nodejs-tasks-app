@@ -50,6 +50,13 @@ const userSchema = new mongoose.Schema({
     ],
 });
 
+// set up virtual property (relationship b/w two collections)
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 //  if object has toJSON function, JSON.stringify() calls toJSON() and serializes return value from toJSON() instead
 userSchema.methods.toJSON = function () {
     const user = this;
