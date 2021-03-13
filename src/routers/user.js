@@ -3,6 +3,7 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const router = new express.Router();
 
+// sign up new user
 router.post("/users", async (req, res) => {
     const user = new User(req.body);
 
@@ -28,14 +29,40 @@ router.post("/users/login", async (req, res) => {
     }
 });
 
+router.post("/users/logout", auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token;
+        });
+        await req.user.save();
+
+        res.send("logout success");
+    } catch (e) {
+        res.status(500).send();
+    }
+});
+
+router.post("/users/logoutAll", auth, async (req, res) => {
+    try {
+        req.user.tokens = [];
+        await req.user.save();
+        res.send("logout all success");
+    } catch (e) {
+        res.status(500).send();
+    }
+});
+
 router.get("/users/me", auth, async (req, res) => {
     res.send(req.user);
-    // try {
-    //     const users = await User.find({});
-    //     res.status(200).send(users);
-    // } catch (err) {
-    //     res.status(500).send();
-    // }
+    // see all users without authentication
+    /*
+    try {
+        const users = await User.find({});
+        res.status(200).send(users);
+    } catch (err) {
+        res.status(500).send();
+    }
+    */
 });
 
 router.get("/users/:id", async (req, res) => {
