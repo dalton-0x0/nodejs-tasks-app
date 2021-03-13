@@ -16,6 +16,7 @@ router.post("/users", async (req, res) => {
     }
 });
 
+// log in user
 router.post("/users/login", async (req, res) => {
     try {
         const user = await User.findByCredentials(
@@ -29,6 +30,7 @@ router.post("/users/login", async (req, res) => {
     }
 });
 
+// log out user
 router.post("/users/logout", auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
@@ -42,6 +44,7 @@ router.post("/users/logout", auth, async (req, res) => {
     }
 });
 
+// logout user from all devices
 router.post("/users/logoutAll", auth, async (req, res) => {
     try {
         req.user.tokens = [];
@@ -52,19 +55,26 @@ router.post("/users/logoutAll", auth, async (req, res) => {
     }
 });
 
+// view current user profile
 router.get("/users/me", auth, async (req, res) => {
     res.send(req.user);
-    // see all users without authentication
-    /*
+});
+
+// users should not be able to see all other users' profiles -> /users/me
+/*
+router.get("/users", async (req, res) => {  
     try {
         const users = await User.find({});
         res.status(200).send(users);
     } catch (err) {
         res.status(500).send();
     }
-    */
-});
 
+});
+*/
+
+// users should only be able to see their own profiles -> /users/me
+/*
 router.get("/users/:id", async (req, res) => {
     const _id = req.params.id;
 
@@ -78,9 +88,10 @@ router.get("/users/:id", async (req, res) => {
         res.status(404).send();
     }
 });
+*/
 
-router.patch("/users/:id", async (req, res) => {
-    const _id = req.params.id;
+// user should be able to update their profile
+router.patch("/users/me", auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ["name", "email", "password", "age"];
     const isValidOperation = updates.every((update) =>
@@ -91,33 +102,22 @@ router.patch("/users/:id", async (req, res) => {
         return res.status(400).send({ error: "invalid updates!" });
     }
     try {
-        const user = await User.findById(req.params.id);
+        updates.forEach((update) => (req.user[update] = req.body[update]));
 
-        updates.forEach((update) => (user[update] = req.body[update]));
+        await req.user.save();
 
-        await user.save();
-        // const user = await User.findByIdAndUpdate(_id, req.body, {
-        //     new: true,
-        //     runValidators: true,
-        // });
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.status(200).send(user);
+        res.status(200).send(req.user);
     } catch (err) {
         res.status(400).send(err);
     }
 });
 
-router.delete("/users/:id", async (req, res) => {
-    const _id = req.params.id;
-
+// users should be able to delete their profiles
+router.delete("/users/me", auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(_id);
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.status(200).send(user);
+        await req.user.remove();
+
+        res.status(200).send(req.user);
     } catch (err) {
         res.status(500).send();
     }
