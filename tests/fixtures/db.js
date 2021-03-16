@@ -6,8 +6,8 @@ const Task = require("../../src/models/task");
 const userOneId = new mongoose.Types.ObjectId();
 const userOne = {
     _id: userOneId,
-    name: "Mike Tyson",
-    email: "mike@email.com",
+    name: "Sam Brown",
+    email: "sam@email.com",
     password: "cookies123",
     tokens: [
         {
@@ -50,6 +50,13 @@ const taskThree = {
     owner: userTwo._id,
 };
 
+const taskFour = {
+    _id: new mongoose.Types.ObjectId(),
+    description: "fourth cook dinner",
+    completed: false,
+    owner: userTwo._id,
+};
+
 const setupDatabase = async () => {
     await User.deleteMany();
     await Task.deleteMany();
@@ -58,6 +65,7 @@ const setupDatabase = async () => {
     await new Task(taskOne).save();
     await new Task(taskTwo).save();
     await new Task(taskThree).save();
+    await new Task(taskFour).save();
 };
 
 module.exports = {
